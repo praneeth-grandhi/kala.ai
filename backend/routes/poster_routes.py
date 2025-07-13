@@ -3,13 +3,13 @@ from typing import List, Optional
 from datetime import datetime
 import uuid
 
-from ..models.poster import (
+from models.poster import (
     PosterRequest, EnhancedPrompt, GeneratedPoster, 
     ChatMessage, LogoData
 )
-from ..services.gemini_service import GeminiService
-from ..services.imagen_service import ImagenService
-from ..database import get_database
+from services.gemini_service import GeminiService
+from services.imagen_service import ImagenService
+from database import get_database
 
 router = APIRouter(prefix="/api/poster", tags=["poster"])
 
