@@ -135,15 +135,39 @@ const ChatInterface = ({ onAddToHistory, onGeneratePoster }) => {
     setCurrentStep("generate");
   };
 
-  const handleGeneratePoster = () => {
+  const handleGeneratePoster = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      const poster = mockData.generatePoster(enhancedPrompt, uploadedLogo, selectedPosition);
+    try {
+      const response = await axios.post(`${BACKEND_URL}/api/poster/generate`, {
+        enhanced_prompt: enhancedPrompt,
+        session_id: Date.now().toString(),
+        user_prompt: messages.filter(m => m.type === "user").pop()?.content || "",
+        keywords: keywords,
+        logo: uploadedLogo,
+        logo_position: selectedPosition
+      });
+
+      const poster = {
+        id: response.data.id,
+        image: response.data.poster_image,
+        prompt: enhancedPrompt,
+        logo: uploadedLogo,
+        logoPosition: selectedPosition,
+        style: response.data.style,
+        dimensions: response.data.dimensions,
+        timestamp: new Date().toLocaleString(),
+        createdAt: response.data.created_at
+      };
+
       setGeneratedPoster(poster);
       onGeneratePoster(poster);
-      setIsLoading(false);
       toast.success("Poster generated successfully!");
-    }, 3000);
+    } catch (error) {
+      console.error('Error generating poster:', error);
+      toast.error("Failed to generate poster. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleStartNew = () => {
