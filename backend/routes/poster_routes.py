@@ -163,7 +163,7 @@ async def get_poster_history(session_id: str):
         print(f"Error in get_poster_history: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/poster/{poster_id}")
+@router.get("/{poster_id}")
 async def get_poster(poster_id: str):
     """
     Get a specific poster by ID
