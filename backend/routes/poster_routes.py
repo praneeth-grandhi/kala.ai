@@ -182,7 +182,7 @@ async def get_poster(poster_id: str):
         print(f"Error in get_poster: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/poster/{poster_id}")
+@router.delete("/{poster_id}")
 async def delete_poster(poster_id: str):
     """
     Delete a poster by ID
