@@ -11,7 +11,7 @@ from services.gemini_service import GeminiService
 from services.imagen_service import ImagenService
 from database import get_database
 
-router = APIRouter(prefix="/api/poster", tags=["poster"])
+router = APIRouter(prefix="/poster", tags=["poster"])
 
 # Initialize services
 gemini_service = GeminiService()
