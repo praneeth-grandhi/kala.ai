@@ -53,8 +53,8 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
-# Include the poster routes
-app.include_router(poster_router)
+# Include the poster routes in the api router
+api_router.include_router(poster_router)
 
 # Include the main api router
 app.include_router(api_router)
