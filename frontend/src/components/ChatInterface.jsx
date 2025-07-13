@@ -76,26 +76,35 @@ const ChatInterface = ({ onAddToHistory, onGeneratePoster }) => {
     }
   };
 
-  const handleRegeneratePrompt = () => {
+  const handleRegeneratePrompt = async () => {
     if (messages.length > 0) {
       const lastUserMessage = messages.filter(m => m.type === "user").pop();
       if (lastUserMessage) {
         setIsLoading(true);
-        setTimeout(() => {
-          const enhanced = mockData.enhancePrompt(lastUserMessage.content);
-          setEnhancedPrompt(enhanced.prompt);
+        try {
+          const response = await axios.post(`${BACKEND_URL}/api/poster/enhance-prompt`, {
+            user_prompt: lastUserMessage.content,
+            session_id: Date.now().toString()
+          });
+
+          const enhanced = response.data;
+          setEnhancedPrompt(enhanced.enhanced_prompt);
           setKeywords(enhanced.keywords);
           
           const aiMessage = {
             type: "ai",
-            content: enhanced.prompt,
+            content: enhanced.enhanced_prompt,
             keywords: enhanced.keywords,
             timestamp: new Date().toISOString(),
           };
           
           setMessages(prev => [...prev, aiMessage]);
+        } catch (error) {
+          console.error('Error regenerating prompt:', error);
+          toast.error("Failed to regenerate prompt. Please try again.");
+        } finally {
           setIsLoading(false);
-        }, 1500);
+        }
       }
     }
   };
