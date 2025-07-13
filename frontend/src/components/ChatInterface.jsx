@@ -47,15 +47,20 @@ const ChatInterface = ({ onAddToHistory, onGeneratePoster }) => {
     setInputValue("");
     setIsLoading(true);
 
-    // Simulate AI prompt enhancement
-    setTimeout(() => {
-      const enhanced = mockData.enhancePrompt(inputValue);
-      setEnhancedPrompt(enhanced.prompt);
+    try {
+      // Call backend API for prompt enhancement
+      const response = await axios.post(`${BACKEND_URL}/api/poster/enhance-prompt`, {
+        user_prompt: inputValue,
+        session_id: Date.now().toString() // Simple session ID for now
+      });
+
+      const enhanced = response.data;
+      setEnhancedPrompt(enhanced.enhanced_prompt);
       setKeywords(enhanced.keywords);
       
       const aiMessage = {
         type: "ai",
-        content: enhanced.prompt,
+        content: enhanced.enhanced_prompt,
         keywords: enhanced.keywords,
         timestamp: new Date().toISOString(),
       };
@@ -63,8 +68,12 @@ const ChatInterface = ({ onAddToHistory, onGeneratePoster }) => {
       setMessages(prev => [...prev, aiMessage]);
       onAddToHistory(aiMessage);
       setCurrentStep("prompt");
+    } catch (error) {
+      console.error('Error enhancing prompt:', error);
+      toast.error("Failed to enhance prompt. Please try again.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   const handleRegeneratePrompt = () => {
