@@ -9,7 +9,9 @@ import { toast } from "sonner";
 import LogoUpload from "./LogoUpload";
 import PositionSelector from "./PositionSelector";
 import PosterDisplay from "./PosterDisplay";
-import { mockData } from "../utils/mockData";
+import axios from "axios";
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ChatInterface = ({ onAddToHistory, onGeneratePoster }) => {
   const [messages, setMessages] = useState([]);
